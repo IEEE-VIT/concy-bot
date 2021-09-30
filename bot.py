@@ -81,7 +81,7 @@ async def daily_reminder(ctx, time):
     pass
 
 
-@client.command(aliases=["pomodoro", "start-pomodoro"])
+@client.command(aliases=["start-pomodoro"])
 async def pomodoro(ctx, time):
     # Set a timer for 25 minutes
     # Notify the user after 25 minutes
