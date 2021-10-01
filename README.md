@@ -6,8 +6,8 @@
 # concy-bot
 A bot which constructively helps you to stay concentrated at the work which you are doing.
 
+<p align="center"><img src="https://user-images.githubusercontent.com/71512843/135589859-898f8678-d1b5-4d25-ae99-3eb8265d5721.gif"></img></p>
 
-![Concy-bot](https://media.giphy.com/media/cobTn4Ht45wkLgOpo5/giphy.gif)
 ## Built With
 * Python
 * Discord API
@@ -20,7 +20,7 @@ A bot which constructively helps you to stay concentrated at the work which you 
 * Refer to this [article](https://realpython.com/how-to-make-a-discord-bot-python/) for detailed instructions
 
 
-* Refer to .env.sample and create your own .env file by replaceing <Token> with your actual token.
+* Refer to `.env.sample` and create your own `.env` file by replaceing <Token> with your actual token.
 
 * Clone your forked repo and cd inside it:
 
@@ -58,4 +58,4 @@ git push origin <my-amazing-feature>
 To start contributing, check out [CONTRIBUTING.md](https://github.com/IEEE-VIT/Templa-rs/blob/master/CONTRIBUTING.md). New contributors are always welcome to support this project. If you want something gentle to start with, check out issues labelled as `easy` or `good-first-issue`. Check out issues labelled as `hacktoberfest` if you are up for some grabs! :) 
 
 ## License
-This project is licensed under [MIT](https://github.com/IEEE-VIT/Templa-rs/blob/master/LICENSE.md).
+This project is licensed under [MIT](https://github.com/IEEE-VIT/concy-bot/blob/master/LICENSE).
