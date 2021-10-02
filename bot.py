@@ -66,40 +66,32 @@ async def alarm(ctx, time):  # Take user input (time in 24-hour format), for exa
     t2=mins*60
     t=t1+t2 #converts everything into seconds
     
-    from datetime import date,datetime
-    userhr=datetime.datetime.now()
-    uh=userhr.strftime("%H") #built-in function that will take the real time hour
-    uh=int(uh)
-
-    usermin=datetime.datetime.now()
-    um=usermin.strftime("M") #built-in function that will take the real time in minutes
-    um=int(um)
-
-    usersec= (uh*3600)+(um*60)
     
-    diff=t-usersec
 
-    if(diff>0):
-        {
-            msg=await ctx.send(f"Alarm is set for:{time}")
+@client.command(aliases=["hourly-reminder", "set-hourly-reminder"])
+async def hourly_reminder(ctx, task): # Takes input from the user (task) about what they would like to accomplish
 
-            while True:
-                diff -=1
-                if diff==0:
-                    await ctx.send(f"{ctx.msg.author.mention},Your ALARM HAS ENDED! ") # Remind the user as soon as it's time
-                    break
-                else:
-                    await msg.edit(content=(f"Time remaining in hours:{diff/3600}")) #gives a remainder after every hour 
-                    await asyncio.sleep(3600) #sleep for 1 hour,i.e. 3600 seconds
+    global times_used
+    await ctx.send(f"YOU HAVE TO COMPLETE {task} and once you have done, write *stop ") #Sends a reminder after one hour to see how far they have come up with the task
 
-                
-        }
-    else:
-        await ctx.send("Invalid, time cannot be counted backwards! ")
+    # This will make sure that the response will only be registered if the following
+    # conditions are met:
+    def check(msg):
+        return msg.author == ctx.author and msg.channel == ctx.channel and \
+        msg.content.lower() in ["stop"] # Wait for the stop command from user (You may use "client.wait_for")
+
+    msg = await client.wait_for("message", check=check)
     
+    
+    while(msg.content.lower() != "stop"):
+           await ctx.send(f"One hour is over PLEASE COMPLETE YOUR {task} SOON")
+           await asyncio.sleep(3600) # At the end of every hour, ask the user if they have completed the task.
+    await ctx.send(f"CONGRATULATIONS YOU HAVE COMPLETED YOUR {task}")
+         
+
+       
+    times_used = times_used + 1
     pass
-
-
 
 
 
