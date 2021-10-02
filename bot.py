@@ -64,8 +64,21 @@ async def stopwach(ctx):
 
 
 @client.command(aliases=["hourly-reminder", "set-hourly-reminder"])
-async def hourly_reminder(ctx, *task):
+async def hourly_reminder(ctx, task):
+    # Takes input from the user (task) about what they would like to accomplish
+    # Send a reminder after one hour to see how far they have come up with the task
+    # At the end of every hour, ask the user if they have completed the task.
+    # Wait for the stop command from user (You may use "client.wait_for")
     pass
+
+
+@client.command(aliases=["daily-reminder", "set-daily-alarm"])
+async def daily_reminder(ctx,*, task):
+    # Takes input from the user (task) about what they would like to accomplish
+    await ctx.send(ctx.author.mention + f" Task: {task}, saved successfully")
+
+    # Start reminder loop
+    reminder_loop.start(ctx, task)
 
 
 @tasks.loop(minutes=60)
@@ -90,15 +103,6 @@ async def reminder_loop(ctx, task):
     except Exception:
         await ctx.send(ctx.author.mention + " I'll remind you again in an hour")
 
-
-@client.command(aliases=["daily-reminder", "set-daily-alarm"])
-async def daily_reminder(ctx,*, task):
-    # Takes input from the user (task) about what they would like to accomplish
-    await ctx.send(ctx.author.mention + f" Task: {task}, saved successfully")
-
-    # Start reminder loop
-    reminder_loop.start(ctx, task)
-    pass
 
 
 @client.command(aliases=["start-pomodoro"])
