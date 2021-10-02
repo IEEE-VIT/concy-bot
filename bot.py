@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import asyncio
+import time
 
 from dotenv import dotenv_values
 
@@ -58,8 +59,8 @@ async def alarm(ctx, time):
 
 @client.command(aliases=["stopwatch", "start-stopwatch"])
 async def stopwach(ctx):
-    # Start a stopwatch
-    # Wait for the stop command from user (You may use "client.wait_for")
+     
+    
     pass
 
 
@@ -83,10 +84,28 @@ async def daily_reminder(ctx, time):
 
 @client.command(aliases=["start-pomodoro"])
 async def pomodoro(ctx, time):
-    # Set a timer for 25 minutes
-    # Notify the user after 25 minutes
-    # Set the timer for 5 minutes (starting of the break)
-    # Notify the user after 5 minutes that Pomodoro has ended
+    print("Pomodoro starts now!")
+    for i in range(4):
+        t=25*60
+        while t:
+            mins = t // 60
+            secs = t%60
+            timer = '{:02d}:{:02d}'.format(mins,secs)
+            print(timer, end="\r")
+            time.sleep(1)
+            t -=1
+            print("Break time!!")
+            t= 5*60
+            while t:
+                mins = t//60
+                secs = t%60
+                timer= '{:02d}:{:02d}'.format(mins,secs)
+                print(timer, end="\r")
+                time.sleep(1)
+                t -=1
+                print("Work time!!")
+
+   
     pass
 
 
