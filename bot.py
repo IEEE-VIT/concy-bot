@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 import asyncio
+import urllib.request
+import json
 
 from dotenv import dotenv_values
 
@@ -106,10 +108,26 @@ async def pomodoro(ctx):
     # Notify the user after 5 minutes that Pomodoro has ended
     await ctx.send(ctx.message.author.mention + " Pomodoro has ended!")
 
-def getQuote(tags=["education", "success"]):  # default arguments
-    # Fetch quotes using an API
-    # https://github.com/lukePeavey/quotable
-    pass
+def getQuote(tags=["inspirational", "success"]):  # default arguments
+    # Get json response containing quote data from the api
+    response = urllib.request.urlopen(f"https://api.quotable.io/random?tags={tags[0]}|{tags[1]}").read()
+    # Convert json response in to a dictionary
+    response_dict = json.loads(response)
+    quote_author =  response_dict["author"]
+    quote_text = response_dict["content"]
+
+    return (quote_text,quote_author)
+
+
+@client.command(aliases=["quote","motivation"])
+async def motivational_quote(ctx):
+    quote = getQuote()
+    quote_text = "\"" + quote[0] + "\""
+    quote_author = "-" + quote[1]
+    # Make a discord embed with quote 
+    quote_embed = discord.Embed(title="Motivational quote",description=quote_text,)
+    quote_embed.set_footer(text=quote_author)
+    await ctx.send(embed=quote_embed)
 
 
 client.run(config["token"])
