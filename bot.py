@@ -95,9 +95,13 @@ async def reminder_loop(ctx, task):
     # Wait for user reply to cancel loop
     try:
         reply = await client.wait_for("message", check=check, timeout=300)
-        if reply.content.lower() in ["stop", "yes", "yep", "done", "sure"]:
+        if reply.content.lower() in ["yes", "yep", "done", "sure"]:
             await ctx.send(ctx.author.mention + f" Congratulations, you finished your daily task: \n\t\"{task}\"")
             reminder_loop.cancel()
+        elif reply.content.lower() in ["break","stop","delete","exit"]:
+            await ctx.send(ctx.author.mention + f" Deleted daily task: \n\t\"{task}\"")
+            reminder_loop.cancel()
+
         else:
             await ctx.send(ctx.author.mention + " Okay, I'll remind you again in an hour")
 
@@ -153,7 +157,7 @@ async def motivational_quote(ctx,*tags):
     AVAILABLE_TAGS = ['business', 'education', 'faith', 'famous-quotes', 'friendship', 'future', 'happiness',
                       'history', 'inspirational', 'life', 'literature', 'love', 'nature', 'politics', 'proverb',
                        'religion', 'science', 'success', 'technology', 'wisdom']
-    # check if the tags enterend as arguments are valid 
+    # check if the tags enterend as arguments are valid
     quote = ()
     if len(tags) > 0:
         if set(tags).issubset(set(AVAILABLE_TAGS)):
@@ -164,8 +168,8 @@ async def motivational_quote(ctx,*tags):
     else:
         quote = getQuote()
     quote_text = "\"" + quote[0] + "\""
-    quote_author = "-" + quote[1]   
-    # Make a discord embed with quote 
+    quote_author = "-" + quote[1]
+    # Make a discord embed with quote
     quote_embed = discord.Embed(title="Motivational Quote",description=quote_text,)
     quote_embed.set_footer(text=quote_author)
     await ctx.send(embed=quote_embed)
