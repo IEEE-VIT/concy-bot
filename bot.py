@@ -82,7 +82,7 @@ async def daily_reminder(ctx, time):
 
 
 @client.command(aliases=["start-pomodoro"])
-async def pomodoro(ctx, time):
+async def pomodoro(ctx):
     # Set a timer for 25 minutes
     time = 1500
     # Notify the user after 25 minutes
@@ -90,8 +90,7 @@ async def pomodoro(ctx, time):
     while True:
         time -= 1
         if time == 0:
-            await message.edit(content=("Time remaining {:02d}:{:02d}".format(0, 0)))
-            await ctx.send(ctx.message.author.mention + " your countdown has ended!\nBreak starts.")
+            await ctx.send(ctx.message.author.mention + " your break has started.")
             break
 
         await asyncio.sleep(1)
@@ -101,8 +100,6 @@ async def pomodoro(ctx, time):
     while True:
         time -= 1
         if time == 0:
-            await message.edit(content=("Time remaining {:02d}:{:02d}".format(0, 0)))
-            await ctx.send(ctx.message.author.mention + " your break countdown has ended!")
             break
 
         await asyncio.sleep(1)
