@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 import asyncio
 
 from dotenv import dotenv_values
@@ -64,36 +64,12 @@ async def stopwach(ctx):
 
 
 @client.command(aliases=["hourly-reminder", "set-hourly-reminder"])
-async def hourly_reminder(ctx, *task):
+async def hourly_reminder(ctx, task):
     # Takes input from the user (task) about what they would like to accomplish
-    task = " ".join(task)
-    await ctx.send(ctx.author.mention + f" Task: {task}, saved successfully")
-
-    # Start reminder loop
-    reminder_loop.start(ctx, task)
-
-
-@tasks.loop(minutes=60)
-async def reminder_loop(ctx, task):
-    # Send reminder and ask for confirmation
-    await ctx.send(ctx.author.mention + f" Task: \"{task}\", should be completed today, \nHave done it already?")
-
-    # Check message source
-    def check(m):
-        return m.channel == ctx.channel and m.author == ctx.author
-
-    # Wait for user reply to cancel loop
-    try:
-        reply = await client.wait_for("message", check=check, timeout=300)
-        if reply.content.lower() in ["stop", "yes", "yep", "done", "sure"]:
-            await ctx.send(ctx.author.mention + f" Congratulations, you finished your daily task: \n\t\"{task}\"")
-            reminder_loop.cancel()
-        else:
-            await ctx.send(ctx.author.mention + " Okay, I'll remind you again in an hour")
-
-    # Continue in case of timeout
-    except Exception:
-        await ctx.send(ctx.author.mention + " I'll remind you again in an hour")
+    # Send a reminder after one hour to see how far they have come up with the task
+    # At the end of every hour, ask the user if they have completed the task.
+    # Wait for the stop command from user (You may use "client.wait_for")
+    pass
 
 
 @client.command(aliases=["daily-reminder", "set-daily-alarm"])
