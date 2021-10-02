@@ -88,27 +88,23 @@ async def pomodoro(ctx, time):
     # Notify the user after 25 minutes
     message = await ctx.send("Your countdown has been started for 25 minutes")
     while True:
-        mins, sec = divmod(time, 60)
         time -= 1
         if time == 0:
             await message.edit(content=("Time remaining {:02d}:{:02d}".format(0, 0)))
             await ctx.send(ctx.message.author.mention + " your countdown has ended!\nBreak starts.")
             break
 
-        await message.edit(content=("Time remaining {:02d}:{:02d}".format(mins, sec)))
         await asyncio.sleep(1)
     # Set the timer for 5 minutes (starting of the break)
     time = 300
     await message.edit(content=("Your break countdown has been started for 5 minutes"))
     while True:
-        mins, sec = divmod(time, 60)
         time -= 1
         if time == 0:
             await message.edit(content=("Time remaining {:02d}:{:02d}".format(0, 0)))
             await ctx.send(ctx.message.author.mention + " your break countdown has ended!")
             break
 
-        await message.edit(content=("Time remaining {:02d}:{:02d}".format(mins, sec)))
         await asyncio.sleep(1)
     # Notify the user after 5 minutes that Pomodoro has ended
     await ctx.send(ctx.message.author.mention + " Pomodoro has ended!")
