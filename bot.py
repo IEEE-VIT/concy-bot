@@ -47,24 +47,7 @@ async def start_timer(ctx, seconds):
         await asyncio.sleep(1)
 
 
-@client.command(aliases=["set-alarm"])
-async def alarm(ctx, time):  # Take user input (time in 24-hour format), for example 23:00
 
-    # Check if it is a valid 24-hour format, and return an apppropriate message 14:30
-    
-    hr=time[:2] #takes the first two indexes of the string time
-    hr=int(hr) 
-    if ((hr<0) or (hr>24)): #checks whether the input hour lies within 0hr to 24
-        await ctx.send("Please enter valid 24 hour format time! ")
-    
-    mins=time[3:]
-    mins=int(mins)
-    if ((mins<0)or (mins>60)):   #checks whether the input minutes lies within 0 to 60mins
-        await ctx.send("Please enter valid 24 hour format")
-    
-    t1=hr*3600
-    t2=mins*60
-    t=t1+t2 #converts everything into seconds
     
     
 
