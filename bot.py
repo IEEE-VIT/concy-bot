@@ -71,7 +71,7 @@ async def alarm(ctx, time):  # Take user input (time in 24-hour format), for exa
 @client.command(aliases=["hourly-reminder", "set-hourly-reminder"])
 async def hourly_reminder(ctx, task): # Takes input from the user (task) about what they would like to accomplish
 
-    global times_used
+    
     await ctx.send(f"YOU HAVE TO COMPLETE {task} and once you have done, write *stop ") #Sends a reminder after one hour to see how far they have come up with the task
 
     # This will make sure that the response will only be registered if the following
@@ -86,11 +86,8 @@ async def hourly_reminder(ctx, task): # Takes input from the user (task) about w
     while(msg.content.lower() != "stop"):
            await ctx.send(f"One hour is over PLEASE COMPLETE YOUR {task} SOON")
            await asyncio.sleep(3600) # At the end of every hour, ask the user if they have completed the task.
-    await ctx.send(f"CONGRATULATIONS YOU HAVE COMPLETED YOUR {task}")
-         
-
-       
-    times_used = times_used + 1
+    await ctx.send(f"CONGRATULATIONS YOU HAVE COMPLETED YOUR {task}")  
+    
     pass
 
 
