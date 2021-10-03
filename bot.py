@@ -1,8 +1,12 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import asyncio
-import dotenv
-config = dotenv.dotenv_values(".env ", verbose=True,)
+import urllib.request
+import json
+
+from dotenv import dotenv_values
+
+config = dotenv_values(".env")
 client = commands.Bot(command_prefix=".")
 
 
@@ -101,10 +105,34 @@ async def daily_reminder(ctx, time):
         time (str): The time in 24-hour format, represents when to remind the user.
     """
     # Takes input from the user (task) about what they would like to accomplish
-    # Send a reminder after 24 hours to see how far they have come up with the task
-    # At the end of every hour, ask the user if they have completed the task.
-    # Wait for the stop command from user (You may use "client.wait_for")
-    pass
+    await ctx.send(ctx.author.mention + f" Task: {task}, saved successfully")
+
+    # Start reminder loop
+    reminder_loop.start(ctx, task)
+
+
+@tasks.loop(minutes=60)
+async def reminder_loop(ctx, task):
+    # Send reminder and ask for confirmation
+    await ctx.send(ctx.author.mention + f" Task: \"{task}\", should be completed today, \nHave done it already?")
+
+    # Check message source
+    def check(m):
+        return m.channel == ctx.channel and m.author == ctx.author
+
+    # Wait for user reply to cancel loop
+    try:
+        reply = await client.wait_for("message", check=check, timeout=300)
+        if reply.content.lower() in ["stop", "yes", "yep", "done", "sure"]:
+            await ctx.send(ctx.author.mention + f" Congratulations, you finished your daily task: \n\t\"{task}\"")
+            reminder_loop.cancel()
+        else:
+            await ctx.send(ctx.author.mention + " Okay, I'll remind you again in an hour")
+
+    # Continue in case of timeout
+    except Exception:
+        await ctx.send(ctx.author.mention + " I'll remind you again in an hour")
+
 
 
 @client.command(aliases=["start-pomodoro"])
@@ -135,15 +163,48 @@ async def pomodoro(ctx):
     # Notify the user after 5 minutes that Pomodoro has ended
     await ctx.send(ctx.message.author.mention + " Pomodoro has ended!")
 
-def getQuote(tags=["education", "success"]):  
+def getQuote(tags=["inspirational", "success"]):  # default arguments
     """ Get random quote from the API
 
     Args:
-        tags (list, optional): [description]. Defaults to ["education", "success"].
+        tags (list, optional): [description]. Defaults to ["inspirational", "success"].
     """
-    # Fetch quotes using an API
-    # https://github.com/lukePeavey/quotable
-    pass
+    #add tags to the url
+    url = "https://api.quotable.io/random?tags="
+    for tag in tags:
+        url = url+tag+"|"
+    # get json response from the quoteable api
+    response = urllib.request.urlopen(url).read()
+    # Convert json response into a dictionary
+    response_dict = json.loads(response)
+    quote_author =  response_dict["author"]
+    quote_text = response_dict["content"]
+
+    return (quote_text,quote_author)
+
+
+@client.command(aliases=["quote","motivation"])
+async def motivational_quote(ctx,*tags):
+    # tags that are available in the quoteable api
+    AVAILABLE_TAGS = ['business', 'education', 'faith', 'famous-quotes', 'friendship', 'future', 'happiness',
+                      'history', 'inspirational', 'life', 'literature', 'love', 'nature', 'politics', 'proverb',
+                       'religion', 'science', 'success', 'technology', 'wisdom']
+    # check if the tags enterend as arguments are valid 
+    quote = ()
+    if len(tags) > 0:
+        if set(tags).issubset(set(AVAILABLE_TAGS)):
+            quote = getQuote(tags=tags)
+        else:
+            await ctx.send("Invalid tag\nthe available tags are:\n"+", ".join(AVAILABLE_TAGS))
+            return
+    else:
+        quote = getQuote()
+    quote_text = "\"" + quote[0] + "\""
+    quote_author = "-" + quote[1]   
+    # Make a discord embed with quote 
+    quote_embed = discord.Embed(title="Motivational Quote",description=quote_text,)
+    quote_embed.set_footer(text=quote_author)
+    await ctx.send(embed=quote_embed)
 
 
 client.run(config["token"])
