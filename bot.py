@@ -72,7 +72,7 @@ async def alarm(ctx, time):
 
 @client.command(aliases=["stopwatch", "start-stopwatch"])
 async def stopwach(ctx):
-    """ Starts a stopwatch until the user types 'stop'
+    """Starts a stopwatch until the user types 'stop'
 
     Args:
         ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
@@ -84,7 +84,7 @@ async def stopwach(ctx):
 
 @client.command(aliases=["hourly-reminder", "set-hourly-reminder"])
 async def hourly_reminder(ctx, task):
-    """ Sets a reminder for a give task each hour 
+    """Sets a reminder for a give task each hour
     Args:
         ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
         task (str): The task to be reminded of
@@ -114,7 +114,10 @@ async def daily_reminder(ctx, task):
 @tasks.loop(minutes=60)
 async def reminder_loop(ctx, task):
     # Send reminder and ask for confirmation
-    await ctx.send(ctx.author.mention + f" Task: \"{task}\", should be completed today, \nHave done it already?")
+    await ctx.send(
+        ctx.author.mention
+        + f' Task: "{task}", should be completed today, \nHave done it already?'
+    )
 
     # Check message source
     def check(m):
@@ -124,20 +127,24 @@ async def reminder_loop(ctx, task):
     try:
         reply = await client.wait_for("message", check=check, timeout=300)
         if reply.content.lower() in ["stop", "yes", "yep", "done", "sure"]:
-            await ctx.send(ctx.author.mention + f" Congratulations, you finished your daily task: \n\t\"{task}\"")
+            await ctx.send(
+                ctx.author.mention
+                + f' Congratulations, you finished your daily task: \n\t"{task}"'
+            )
             reminder_loop.cancel()
         else:
-            await ctx.send(ctx.author.mention + " Okay, I'll remind you again in an hour")
+            await ctx.send(
+                ctx.author.mention + " Okay, I'll remind you again in an hour"
+            )
 
     # Continue in case of timeout
     except Exception:
         await ctx.send(ctx.author.mention + " I'll remind you again in an hour")
 
 
-
 @client.command(aliases=["start-pomodoro"])
 async def pomodoro(ctx):
-    """ Starts a pomodoro timer for 25 minutes
+    """Starts a pomodoro timer for 25 minutes
     ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
     """
     # Set a timer for 25 minutes
@@ -163,46 +170,71 @@ async def pomodoro(ctx):
     # Notify the user after 5 minutes that Pomodoro has ended
     await ctx.send(ctx.message.author.mention + " Pomodoro has ended!")
 
+
 def getQuote(tags=["inspirational", "success"]):  # default arguments
-    """ Get random quote from the API
+    """Get random quote from the API
 
     Args:
         tags (list, optional): [description]. Defaults to ["inspirational", "success"].
     """
-    #add tags to the url
+    # add tags to the url
     url = "https://api.quotable.io/random?tags="
     for tag in tags:
-        url = url+tag+"|"
+        url = url + tag + "|"
     # get json response from the quoteable api
     response = urllib.request.urlopen(url).read()
     # Convert json response into a dictionary
     response_dict = json.loads(response)
-    quote_author =  response_dict["author"]
+    quote_author = response_dict["author"]
     quote_text = response_dict["content"]
 
-    return (quote_text,quote_author)
+    return (quote_text, quote_author)
 
 
-@client.command(aliases=["quote","motivation"])
-async def motivational_quote(ctx,*tags):
+@client.command(aliases=["quote", "motivation"])
+async def motivational_quote(ctx, *tags):
     # tags that are available in the quoteable api
-    AVAILABLE_TAGS = ['business', 'education', 'faith', 'famous-quotes', 'friendship', 'future', 'happiness',
-                      'history', 'inspirational', 'life', 'literature', 'love', 'nature', 'politics', 'proverb',
-                       'religion', 'science', 'success', 'technology', 'wisdom']
-    # check if the tags enterend as arguments are valid 
+    AVAILABLE_TAGS = [
+        "business",
+        "education",
+        "faith",
+        "famous-quotes",
+        "friendship",
+        "future",
+        "happiness",
+        "history",
+        "inspirational",
+        "life",
+        "literature",
+        "love",
+        "nature",
+        "politics",
+        "proverb",
+        "religion",
+        "science",
+        "success",
+        "technology",
+        "wisdom",
+    ]
+    # check if the tags enterend as arguments are valid
     quote = ()
     if len(tags) > 0:
         if set(tags).issubset(set(AVAILABLE_TAGS)):
             quote = getQuote(tags=tags)
         else:
-            await ctx.send("Invalid tag\nthe available tags are:\n"+", ".join(AVAILABLE_TAGS))
+            await ctx.send(
+                "Invalid tag\nthe available tags are:\n" + ", ".join(AVAILABLE_TAGS)
+            )
             return
     else:
         quote = getQuote()
-    quote_text = "\"" + quote[0] + "\""
-    quote_author = "-" + quote[1]   
-    # Make a discord embed with quote 
-    quote_embed = discord.Embed(title="Motivational Quote",description=quote_text,)
+    quote_text = '"' + quote[0] + '"'
+    quote_author = "-" + quote[1]
+    # Make a discord embed with quote
+    quote_embed = discord.Embed(
+        title="Motivational Quote",
+        description=quote_text,
+    )
     quote_embed.set_footer(text=quote_author)
     await ctx.send(embed=quote_embed)
 
