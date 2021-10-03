@@ -97,12 +97,12 @@ async def hourly_reminder(ctx, task):
 
 
 @client.command(aliases=["daily-reminder", "set-daily-alarm"])
-async def daily_reminder(ctx, time):
+async def daily_reminder(ctx, task):
     """
     Sets a reminder for a give task each day.
     Args:
         ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
-        time (str): The time in 24-hour format, represents when to remind the user.
+        task (str): The task to be reminded of
     """
     # Takes input from the user (task) about what they would like to accomplish
     await ctx.send(ctx.author.mention + f" Task: {task}, saved successfully")
