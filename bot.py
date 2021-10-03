@@ -47,49 +47,7 @@ async def start_timer(ctx, seconds):
         await asyncio.sleep(1)
 
 
-@client.command(aliases=["set-alarm"])
-async def alarm(ctx, time):  # Take user input (time in 24-hour format), for example 23:00
 
-    # Check if it is a valid 24-hour format, and return an apppropriate message 14:30
-    
-    hr=time[:2] #takes the first two indexes of the string time
-    hr=int(hr) 
-    if ((hr<0) or (hr>24)): #checks whether the input hour lies within 0hr to 24
-        await ctx.send("Please enter valid 24 hour format time! ")
-    
-    mins=time[3:]
-    mins=int(mins)
-    if ((mins<0)or (mins>60)):   #checks whether the input minutes lies within 0 to 60mins
-        await ctx.send("Please enter valid 24 hour format")
-    
-    t1=hr*3600
-    t2=mins*60
-    t=t1+t2 #converts everything into seconds
-    from datetime import date,datetime
-    userhr=datetime.datetime.now()
-    uh=userhr.strftime("%H") #built-in function that will take the real time hour
-    uh=int(uh)
-
-    usermin=datetime.datetime.now()
-    um=usermin.strftime("M") #built-in function that will take the real time in minutes
-    um=int(um)
-
-    usersec= (uh*3600)+(um*60)
-    
-    diff=t-usersec
-    msg= await ctx.send(f"Your alarm is set for : {str(time)} ")
-    
-    while True:
-        diff -=1
-        if diff==0:
-            await ctx.send(f"{ctx.msg.author.mention},Your ALARM HAS ENDED! ") # Remind the user as soon as it's time
-            break
-        else:
-            await msg.edit(content=(f"Time remaining in hours:{diff/3600}")) #gives a remainder after every hour 
-            await asyncio.sleep(3600) #sleep for 1 hour,i.e. 3600 seconds
-   
-    pass
-    
     
 
 @client.command(aliases=["hourly-reminder", "set-hourly-reminder"])
