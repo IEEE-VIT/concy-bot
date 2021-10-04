@@ -141,6 +141,12 @@ async def reminder_loop(ctx, task):
         await ctx.send(ctx.author.mention + " I'll remind you again in an hour")
 
 
+@client.command(aliases=["break_daily","stop_daily"])
+async def delete_daily(ctx):
+    #cancelling the current daily task
+    await ctx.send(ctx.author.mention + f"Task successfully deleted!")
+    reminder_loop.cancel()
+
 
 @client.command(aliases=["start-pomodoro"])
 async def pomodoro(ctx):
