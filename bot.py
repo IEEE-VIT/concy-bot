@@ -191,6 +191,10 @@ def getQuote(tags=["inspirational", "success"]):  # default arguments
 async def motivational_quote(ctx, *tags):
     """ Get a random quote from the API based on the tags provided
 
+@client.command(aliases=["quote","motivation"])
+async def motivational_quote(ctx,*tags):
+    """ Get a random quote from the API based on the tags provided
+
     Args:
         ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
         tags (list, optional): Tags provided by the user. Defaults to ["inspirational", "success"].
