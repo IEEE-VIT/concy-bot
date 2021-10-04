@@ -75,7 +75,7 @@ async def hourly_reminder(ctx, task):
 
 
 @client.command(aliases=["daily-reminder", "set-daily-alarm"])
-async def daily_reminder(ctx,*, task):
+async def daily_reminder(ctx, *, task):
     # Takes input from the user (task) about what they would like to accomplish
     await ctx.send(ctx.author.mention + f" Task: {task}, saved successfully")
 
@@ -106,7 +106,6 @@ async def reminder_loop(ctx, task):
         await ctx.send(ctx.author.mention + " I'll remind you again in an hour")
 
 
-
 @client.command(aliases=["start-pomodoro"])
 async def pomodoro(ctx):
     # Set a timer for 25 minutes
@@ -132,27 +131,28 @@ async def pomodoro(ctx):
     # Notify the user after 5 minutes that Pomodoro has ended
     await ctx.send(ctx.message.author.mention + " Pomodoro has ended!")
 
+
 def getQuote(tags=["inspirational", "success"]):  # default arguments
-    #add tags to the url
+    # add tags to the url
     url = "https://api.quotable.io/random?tags="
     for tag in tags:
         url = url+tag+"|"
     # get json response from the quoteable api
     response_dict = requests.get(url).json()
     # Convert json response into a dictionary
-    quote_author =  response_dict["author"]
+    quote_author = response_dict["author"]
     quote_text = response_dict["content"]
 
-    return (quote_text,quote_author)
+    return (quote_text, quote_author)
 
 
-@client.command(aliases=["quote","motivation"])
-async def motivational_quote(ctx,*tags):
+@client.command(aliases=["quote", "motivation"])
+async def motivational_quote(ctx, *tags):
     # tags that are available in the quoteable api
     AVAILABLE_TAGS = ['business', 'education', 'faith', 'famous-quotes', 'friendship', 'future', 'happiness',
                       'history', 'inspirational', 'life', 'literature', 'love', 'nature', 'politics', 'proverb',
-                       'religion', 'science', 'success', 'technology', 'wisdom']
-    # check if the tags enterend as arguments are valid 
+                      'religion', 'science', 'success', 'technology', 'wisdom']
+    # check if the tags enterend as arguments are valid
     quote = ()
     if len(tags) > 0:
         if set(tags).issubset(set(AVAILABLE_TAGS)):
@@ -163,9 +163,10 @@ async def motivational_quote(ctx,*tags):
     else:
         quote = getQuote()
     quote_text = "\"" + quote[0] + "\""
-    quote_author = "-" + quote[1]   
-    # Make a discord embed with quote 
-    quote_embed = discord.Embed(title="Motivational Quote",description=quote_text,)
+    quote_author = "-" + quote[1]
+    # Make a discord embed with quote
+    quote_embed = discord.Embed(
+        title="Motivational Quote", description=quote_text,)
     quote_embed.set_footer(text=quote_author)
     await ctx.send(embed=quote_embed)
 
