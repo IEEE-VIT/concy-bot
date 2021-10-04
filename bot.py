@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands, tasks
 import asyncio
-import urllib.request
+import requests
 import json
 
 from dotenv import dotenv_values
@@ -138,9 +138,8 @@ def getQuote(tags=["inspirational", "success"]):  # default arguments
     for tag in tags:
         url = url+tag+"|"
     # get json response from the quoteable api
-    response = urllib.request.urlopen(url).read()
+    response_dict = requests.get(url).json()
     # Convert json response into a dictionary
-    response_dict = json.loads(response)
     quote_author =  response_dict["author"]
     quote_text = response_dict["content"]
 
