@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands, tasks
 import asyncio
 import requests
-import json
 
 from dotenv import dotenv_values
 
@@ -110,9 +109,11 @@ async def daily_reminder(ctx, *, task):
 @tasks.loop(minutes=60)
 async def reminder_loop(ctx, task):
     """ Send reminder to user and repeat reminder every hour unless user confirms
+
     Args:
         ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
         task (str): The task to be reminded of
+
     """
     # Send reminder and ask for confirmation
     await ctx.send(ctx.author.mention + f" Task: \"{task}\", should be completed today, \nHave done it already?")
@@ -174,8 +175,12 @@ def getQuote(tags=["inspirational", "success"]):  # default arguments
     for tag in tags:
         url = url+tag+"|"
     # get json response from the quoteable api
-    response_dict = requests.get(url).json()
-    # Convert json response into a dictionary
+    response = requests.get(url)
+    if response.status_code == 200:
+        response_dict = requests.get(url).json()
+    else:
+        response_dict = {"author": "Error "+response.status_code,
+                         "content": "Please contact the bot owner!"}
     quote_author = response_dict["author"]
     quote_text = response_dict["content"]
 
@@ -185,6 +190,7 @@ def getQuote(tags=["inspirational", "success"]):  # default arguments
 @client.command(aliases=["quote", "motivation"])
 async def motivational_quote(ctx, *tags):
     """ Get a random quote from the API based on the tags provided
+
     Args:
         ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
         tags (list, optional): Tags provided by the user. Defaults to ["inspirational", "success"].
