@@ -1,13 +1,15 @@
-import discord
+import discord, os
 from discord.ext import commands, tasks
 import asyncio
 import urllib.request
 import json
 
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 
-config = dotenv_values(".env")
-client = commands.Bot(command_prefix=".")
+load_dotenv()
+token = os.getenv('token')
+
+client = commands.Bot(command_prefix=commands.when_mentioned_or("."))
 
 
 @client.event
@@ -226,4 +228,4 @@ async def motivational_quote(ctx,*tags):
     await ctx.send(embed=quote_embed)
 
 
-client.run(config["token"])
+client.run(token)
