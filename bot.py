@@ -69,13 +69,34 @@ async def alarm(ctx, time):
 
 @client.command(aliases=["stopwatch", "start-stopwatch"])
 async def stopwach(ctx):
-    """Starts a stopwatch until the user types 'stop'
+    """
+    Start a stopwatch on command, which stops after user command and shows total elapsed time in seconds.
+
     Args:
         ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
+
+    Returns:
+        [type]: [description]
     """
-    # Start a stopwatch
-    # Wait for the stop command from user (You may use "client.wait_for")
-    pass
+    second = 0
+    await ctx.send("Your stopwatch has been started...Send 'stop', to stop the watch.")
+    message = await ctx.send((f"Time elapsed : {second} second(s)"))
+    def check(m):
+        return m.channel == ctx.channel and m.author == ctx.author and "stop" in m.content
+
+    while True :
+        second += 1
+        print("seconds: ", second)
+
+        await message.edit(content=(f"Time elapsed : {second} second(s)"))
+        try: 
+            msg = await client.wait_for("message", check= lambda x: x.author == ctx.author and "stop" in x.content, timeout=1)
+        except asyncio.TimeoutError:
+            continue
+        else:
+            await ctx.send(content=(f"Total time elapsed : {str(second)} second(s)"))
+            break
+
 
 
 @client.command(aliases=["hourly-reminder", "set-hourly-reminder"])
