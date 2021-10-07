@@ -90,7 +90,7 @@ async def stopwach(ctx):
 
         await message.edit(content=(f"Time elapsed : {second} second(s)"))
         try: 
-            msg = await client.wait_for("message", check= lambda x: x.author == ctx.author and "stop" in x.content, timeout=1)
+            await client.wait_for("message", check= lambda x: x.author == ctx.author and "stop" in x.content, timeout=1)
         except asyncio.TimeoutError:
             continue
         else:
