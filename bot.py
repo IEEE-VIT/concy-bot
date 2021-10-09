@@ -3,15 +3,25 @@ from discord.ext import commands, tasks
 import asyncio
 import urllib.request
 import json
-
+import os 
 from dotenv import dotenv_values
+from datetime import datetime, timedelta
 
 config = dotenv_values(".env")
 client = commands.Bot(command_prefix=".")
 
+if not os.path.exists("events") :
+    os.makedirs("events")
+BASE_PATH = "events/"
+
+filepath = None
 
 @client.event
 async def on_ready():
+    global filepath
+    print(client.user.name)
+    print(client.user.id)
+    filepath = BASE_PATH + str(client.user.id) +".json"
     print("Bot is ready")
 
 
@@ -64,6 +74,7 @@ async def alarm(ctx, time):
     # Check if it is a valid 24-hour format, and return an apppropriate message
     # Parse the user input using time.split(":")
     # Remind the user as soon as it's time
+
     pass
 
 
@@ -95,7 +106,7 @@ async def hourly_reminder(ctx, task):
 @client.command(aliases=["daily-reminder", "set-daily-alarm"])
 async def daily_reminder(ctx,*, task):
     """
-    Sets a reminder for a give task each day.
+    Sets a reminder for a given task each day.
     Args:
         ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
         task (str): The task to be reminded of
@@ -224,6 +235,34 @@ async def motivational_quote(ctx,*tags):
     quote_embed = discord.Embed(title="Motivational Quote",description=quote_text,)
     quote_embed.set_footer(text=quote_author)
     await ctx.send(embed=quote_embed)
+
+def where_json(file_name):
+    return os.path.exists(file_name)
+
+def validate_dt_format(date, time) :
+    date_time_obj = datetime.strptime(date + " " + time, "%d/%m/%y %H:%M:%S")
+    print ("The date is", date_time_obj)
+    return date_time_obj
+    
+    pass
+@client.command(case_insensitive=True, aliases=["schedule"])
+async def schedule_event(ctx, event="randomevent", time="19:21:00", date="09/10/21"):
+    print("date: ", date)
+    print("time: ", time)
+    print("event: ", event)
+    embed = discord.Embed(color=0x55a7f7, timestamp=datetime.now())
+    event_time = validate_dt_format(date, time)
+    now = datetime.now()
+    difference = (event_time - now).total_seconds() 
+    print(f"Total time difference: {difference}")
+    if difference > 7776000:
+        embed.add_field(name='Warning', value='You have specified a too long duration!\nMaximum duration is 90 days.')
+    else:
+        await ctx.send(f"Alright, I will remind you about {event} in {str(event_time)}.")
+        await asyncio.sleep(difference)
+        await ctx.send(f"Hi, you asked me to remind you about {event} {(str(timedelta(seconds=difference)))} ago.")
+        return
+    await ctx.send(embed=embed)
 
 
 client.run(config["token"])
