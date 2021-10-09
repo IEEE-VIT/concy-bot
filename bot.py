@@ -253,6 +253,14 @@ def validate_dt_format(date, time) :
     pass
 @client.command(case_insensitive=True, aliases=["schedule"])
 async def schedule_event(ctx, event="randomevent", time="19:21:00", date="09/10/21"):
+    """ Schedule a single event for a specific date and time.
+
+    Args:
+        ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
+        event (str, optional): Name of the task/event to be reminded of. Defaults to "randomevent".
+        time (str, optional): Time at which to remind of event. Defaults to "19:21:00".
+        date (str, optional): Date on which to remind of event.. Defaults to "09/10/21".
+    """
     # print("date: ", date)
     # print("time: ", time)
     # print("event: ", event)
