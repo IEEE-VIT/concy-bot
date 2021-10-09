@@ -247,20 +247,20 @@ def where_json(file_name):
 
 def validate_dt_format(date, time) :
     date_time_obj = datetime.strptime(date + " " + time, "%d/%m/%y %H:%M:%S")
-    print ("The date is", date_time_obj)
+    # print ("The date is", date_time_obj)
     return date_time_obj
     
     pass
 @client.command(case_insensitive=True, aliases=["schedule"])
 async def schedule_event(ctx, event="randomevent", time="19:21:00", date="09/10/21"):
-    print("date: ", date)
-    print("time: ", time)
-    print("event: ", event)
+    # print("date: ", date)
+    # print("time: ", time)
+    # print("event: ", event)
     embed = discord.Embed(color=0x55a7f7, timestamp=datetime.now())
     event_time = validate_dt_format(date, time)
     now = datetime.now()
     difference = (event_time - now).total_seconds() 
-    print(f"Total time difference: {difference}")
+    # print(f"Total time difference: {difference}")
     if difference > 7776000:
         embed.add_field(name='Warning', value='You have specified a too long duration!\nMaximum duration is 90 days.')
     else:
