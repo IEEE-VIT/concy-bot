@@ -1,18 +1,18 @@
 import discord
 from discord.ext import commands, tasks
 import asyncio
-import urllib.request
+import aiohttp
 import json
 
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
-client = commands.Bot(command_prefix=".")
+client = commands.Bot(command_prefix=commands.when_mentioned_or("."))
 
 
 @client.event
 async def on_ready():
-    print("Bot is ready")
+    print('We have logged in as {0.user}'.format(client)) 
 
 
 @client.command(aliases=["timer", "start-timer"])
@@ -183,53 +183,29 @@ async def pomodoro(ctx):
     # Notify the user after 5 minutes that Pomodoro has ended
     await ctx.send(ctx.message.author.mention + " Pomodoro has ended!")
 
-def getQuote(tags=["inspirational", "success"]):  # default arguments
-    """Get random quote from the API
-    Args:
-        tags (list, optional): Tags provided by the user. Defaults to ["inspirational", "success"].
-    """
-    #add tags to the url
-    url = "https://api.quotable.io/random?tags="
-    for tag in tags:
-        url = url+tag+"|"
-    # get json response from the quoteable api
-    response = urllib.request.urlopen(url).read()
-    # Convert json response into a dictionary
-    response_dict = json.loads(response)
-    quote_author =  response_dict["author"]
-    quote_text = response_dict["content"]
-
-    return (quote_text,quote_author)
-
-
 @client.command(aliases=["quote","motivation"])
-async def motivational_quote(ctx,*tags):
+async def motivational_quote(ctx, message = " "):
     """ Get a random quote from the API based on the tags provided
-
     Args:
         ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
         tags (list, optional): Tags provided by the user. Defaults to ["inspirational", "success"].
+        tags (list, optional): Tags provided by the user.
     """
     # tags that are available in the quoteable api
-    AVAILABLE_TAGS = ['business', 'education', 'faith', 'famous-quotes', 'friendship', 'future', 'happiness',
-                      'history', 'inspirational', 'life', 'literature', 'love', 'nature', 'politics', 'proverb',
-                       'religion', 'science', 'success', 'technology', 'wisdom']
-    # check if the tags enterend as arguments are valid
-    quote = ()
-    if len(tags) > 0:
-        if set(tags).issubset(set(AVAILABLE_TAGS)):
-            quote = getQuote(tags=tags)
-        else:
-            await ctx.send("Invalid tag\nthe available tags are:\n"+", ".join(AVAILABLE_TAGS))
-            return
+    user = message.lower()
+    if user == "daily":
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://zenquotes.io/api/today") as response:
+                json_data = json.loads(await response.text())
+                quote = json_data[0]["q"] + " - " + json_data[0]['a']
+                await ctx.send(quote)
+    elif user == " ":   
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://zenquotes.io/api/random") as response:
+                json_data = json.loads(await response.text())
+                quote = json_data[0]["q"] + " - " + json_data[0]['a']
+                await ctx.send(quote)
     else:
-        quote = getQuote()
-    quote_text = "\"" + quote[0] + "\""
-    quote_author = "-" + quote[1]
-    # Make a discord embed with quote
-    quote_embed = discord.Embed(title="Motivational Quote",description=quote_text,)
-    quote_embed.set_footer(text=quote_author)
-    await ctx.send(embed=quote_embed)
-
+        await ctx.send(f"{ctx.author.mention} Please make sure if you have no spelling error in the command")
 
 client.run(config["token"])
