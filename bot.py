@@ -169,6 +169,12 @@ async def reminder_loop(ctx, task):
             break
 
 
+@client.command(aliases=["break_daily","stop_daily"])
+async def delete_daily(ctx):
+    #cancelling the current daily task
+    await ctx.send(ctx.author.mention + f"Task successfully deleted!")
+    reminder_loop.cancel()
+
 
 @client.command(aliases=["start-pomodoro"])
 async def pomodoro(ctx):
@@ -229,7 +235,7 @@ async def motivational_quote(ctx,*tags):
     AVAILABLE_TAGS = ['business', 'education', 'faith', 'famous-quotes', 'friendship', 'future', 'happiness',
                       'history', 'inspirational', 'life', 'literature', 'love', 'nature', 'politics', 'proverb',
                        'religion', 'science', 'success', 'technology', 'wisdom']
-    # check if the tags enterend as arguments are valid 
+    # check if the tags enterend as arguments are valid
     quote = ()
     if len(tags) > 0:
         if set(tags).issubset(set(AVAILABLE_TAGS)):
@@ -240,8 +246,8 @@ async def motivational_quote(ctx,*tags):
     else:
         quote = getQuote()
     quote_text = "\"" + quote[0] + "\""
-    quote_author = "-" + quote[1]   
-    # Make a discord embed with quote 
+    quote_author = "-" + quote[1]
+    # Make a discord embed with quote
     quote_embed = discord.Embed(title="Motivational Quote",description=quote_text,)
     quote_embed.set_footer(text=quote_author)
     await ctx.send(embed=quote_embed)
