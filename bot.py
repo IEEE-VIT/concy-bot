@@ -74,19 +74,13 @@ async def stopwach(ctx):
 
     Args:
         ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
-
-    Returns:
-        [type]: [description]
     """
     second = 0
     await ctx.send("Your stopwatch has been started...Send 'stop', to stop the watch.")
     message = await ctx.send((f"Time elapsed : {second} second(s)"))
-    def check(m):
-        return m.channel == ctx.channel and m.author == ctx.author and "stop" in m.content
 
     while True :
         second += 1
-        print("seconds: ", second)
 
         await message.edit(content=(f"Time elapsed : {second} second(s)"))
         try: 
