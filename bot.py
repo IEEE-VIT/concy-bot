@@ -3,17 +3,15 @@ from discord.ext import commands, tasks
 import asyncio
 import urllib.request
 import json
-
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
 client = commands.Bot(command_prefix=".")
-
+client.remove_command("help")
 
 @client.event
 async def on_ready():
     print("Bot is ready")
-
 
 @client.command(aliases=["timer", "start-timer"])
 async def start_timer(ctx, seconds):
@@ -163,7 +161,7 @@ async def reminder_loop(ctx, task):
             break
 
 
-@client.command(aliases=["break_daily","stop_daily"])
+@client.command(aliases=["break-daily","stop_daily"])
 async def delete_daily(ctx):
     #cancelling the current daily task
     await ctx.send(ctx.author.mention + f"Task successfully deleted!")
@@ -245,6 +243,28 @@ async def motivational_quote(ctx,*tags):
     quote_embed = discord.Embed(title="Motivational Quote",description=quote_text,)
     quote_embed.set_footer(text=quote_author)
     await ctx.send(embed=quote_embed)
+
+
+@client.command(aliases=["help", "h"])
+async def send_help(ctx):
+    """ Send help message
+
+    Args:
+        ctx (discord.ext.commands.Context): Represents the context in which a command is being invoked under.
+    """
+    # Make a discord embed with help message
+    help_embed = discord.Embed(title="Help", description="Here are the commands I can understand:", color=0x00ff00)
+    help_embed.add_field(name=".quote", value="Get a motivational quote")
+    help_embed.add_field(name=".motivation", value="Get a motivational quote")
+    help_embed.add_field(name=".daily-reminder", value="Set a daily task")
+    help_embed.add_field(name=".break-daily", value="Cancel the current daily task")
+    help_embed.add_field(name=".start-pomodoro", value="Start a pomodoro timer")
+    help_embed.add_field(name=".stopwatch", value="Start a stopwatch")
+    help_embed.add_field(name=".start-stopwatch", value="Start a stopwatch")
+    help_embed.add_field(name=".timer", value="Start a timer")
+    help_embed.add_field(name=".start-timer", value="Start a timer")   
+
+    await ctx.send(embed=help_embed)
 
 
 client.run(config["token"])
