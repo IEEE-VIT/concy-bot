@@ -38,22 +38,22 @@ class others(commands.Cog):
       await ctx.send(ctx.message.author.mention + " Pomodoro has ended!")
 
   def getQuote(self, tags=["inspirational", "success"]):  # default arguments
-    """Get random quote from the API
-    Args:
-        tags (list, optional): Tags provided by the user. Defaults to ["inspirational", "success"].
-    """
-    #add tags to the url
-    url = "https://api.quotable.io/random?tags="
-    for tag in tags:
-        url = url+tag+"|"
-    # get json response from the quoteable api
-    response = urllib.request.urlopen(url).read()
-    # Convert json response into a dictionary
-    response_dict = json.loads(response)
-    quote_author =  response_dict["author"]
-    quote_text = response_dict["content"]
+      """Get random quote from the API
+      Args:
+          tags (list, optional): Tags provided by the user. Defaults to ["inspirational", "success"].
+      """
+      #add tags to the url
+      url = "https://api.quotable.io/random?tags="
+      for tag in tags:
+          url = url+tag+"|"
+      # get json response from the quoteable api
+      response = urllib.request.urlopen(url).read()
+      # Convert json response into a dictionary
+      response_dict = json.loads(response)
+      quote_author =  response_dict["author"]
+      quote_text = response_dict["content"]
 
-    return (quote_text,quote_author)
+      return (quote_text,quote_author)
 
 
   @commands.command(aliases=["quote","motivation"])
@@ -86,4 +86,4 @@ class others(commands.Cog):
 
 
 def setup(client):
-  client.add_cog(others(client))
+    client.add_cog(others(client))
