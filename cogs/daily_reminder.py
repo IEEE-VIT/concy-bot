@@ -1,4 +1,4 @@
-import discord
+
 from discord.ext import commands, tasks
 
 class daily_reminder(commands.Cog):
@@ -6,7 +6,7 @@ class daily_reminder(commands.Cog):
   def __init__(self, client):
     self.client = client
 
-  @commands.command(aliases=["daily-reminder", "set-daily-alarm"])
+  @commands.command(aliases=["daily-reminder", "set-daily-alarm" , "daily"])
   async def daily_reminder(self, ctx,*, task):
       """
       Sets a reminder for a give task each day.
