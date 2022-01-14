@@ -9,6 +9,7 @@ client = commands.Bot(command_prefix=".")
 
 @client.event
 async def on_ready():
+    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f".help for help"))
     print("Bot is ready")
 
 @client.command()
